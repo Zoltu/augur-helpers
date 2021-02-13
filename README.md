@@ -1,5 +1,7 @@
-# preact-es2020-template
-A skeleton for un-bundled preact projects.
+# augur-helpers
+Little helper utilities for interacting with Augur
+
+# Contributing
 
 ## Install
 _this command will do an `npm install` for you_
@@ -22,9 +24,7 @@ npm run watch
 npm run serve
 ```
 
-No bundler, pure ES2020 modules loaded directly into the browser.  It uses es-module-shims for import map support (not yet implemented in any browsers) but otherwise doesn't use any special loaders, bundlers, file servers, etc.  Hosting is done via a static file server, you could use any static file server you wanted but I chose http-server because it is small and simple.
-
-The one caveat with this project is the vendoring of dependencies.  To add a runtime dependency:
+One caveat with this project is the vendoring of dependencies.  To add a runtime dependency:
 1. open `build/vendor.ts`
 1. create an entry in the array
 1. specify the dependency package name
