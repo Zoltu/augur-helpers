@@ -6,6 +6,13 @@ const dependencyPaths = [
 	{ packageName: 'es-module-shims', subfolderToVendor: 'es-module-shims/dist', entrypointFile: 'es-module-shims.min.js' },
 	{ packageName: 'preact', subfolderToVendor: 'preact/dist', entrypointFile: 'preact.module.js' },
 	{ packageName: 'preact/jsx-runtime', subfolderToVendor: 'preact/jsx-runtime/dist', entrypointFile: 'jsxRuntime.module.js' },
+	{ packageName: 'preact/hooks', subfolderToVendor: 'preact/hooks/dist', entrypointFile: 'hooks.module.js' },
+	{ packageName: '@zoltu/ethereum-abi-encoder', subfolderToVendor: '@zoltu/ethereum-abi-encoder/output-es', entrypointFile: 'index.js' },
+	{ packageName: '@zoltu/ethereum-crypto', subfolderToVendor: '@zoltu/ethereum-crypto/output-es', entrypointFile: 'index.js' },
+	{ packageName: '@zoltu/ethereum-fetch-json-rpc', subfolderToVendor: '@zoltu/ethereum-fetch-json-rpc/output-es', entrypointFile: 'index.js' },
+	{ packageName: '@zoltu/ethereum-types', subfolderToVendor: '@zoltu/ethereum-types/output-es', entrypointFile: 'index.js' },
+	{ packageName: '@zoltu/solidity-typescript-generator-fetch-dependencies', subfolderToVendor: '@zoltu/solidity-typescript-generator-fetch-dependencies/output-es', entrypointFile: 'index.js' },
+	{ packageName: '@zoltu/solidity-typescript-generator-browser-dependencies', subfolderToVendor: '@zoltu/solidity-typescript-generator-browser-dependencies/output-es', entrypointFile: 'index.js' },
 ]
 
 async function vendorDependencies() {
