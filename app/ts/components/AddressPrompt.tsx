@@ -12,18 +12,23 @@ export function AddressPrompt(model: Readonly<{
 		const match = /^(?:0x)?([a-fA-F0-9]{40})$/.exec(stringAddress)
 		if (stringAddress === '') {
 			setError('')
-			setAddress(undefined)
-			model.onChange(undefined)
-		}
-		else if (match === null) {
+			if (address !== undefined) {
+				setAddress(undefined)
+				model.onChange(undefined)
+			}
+		} else if (match === null) {
 			setError(`${model.label} must be a hex string encoded byte array with an optional '0x' prefix.`)
-			setAddress(undefined)
-			model.onChange(undefined)
+			if (address !== undefined) {
+				setAddress(undefined)
+				model.onChange(undefined)
+			}
 		} else {
-			const address = BigInt(`0x${match[1]}`)
+			const newAddress = BigInt(`0x${match[1]}`)
 			setError('')
-			setAddress(address)
-			model.onChange(address)
+			if (newAddress !== address) {
+				setAddress(newAddress)
+				model.onChange(newAddress)
+			}
 		}
 	}, [stringAddress])
 

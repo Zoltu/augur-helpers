@@ -1,22 +1,32 @@
+import * as preactHooks from 'preact/hooks'
+export type Inactive = { state: 'inactive' }
 export type Pending = { state: 'pending' }
 export type Resolved<T> = { state: 'resolved', value: T }
 export type Rejected = { state: 'rejected', error: Error }
-export type AsyncProperty<T> = { readonly refresh: () => void} & (Pending | Resolved<T> | Rejected)
-export type StripAsyncProperty<T extends AsyncProperty<unknown>> = T extends Resolved<infer U> ? U : never
+export type AsyncProperty<T> = Inactive | Pending | Resolved<T> | Rejected
 
-export function refreshableAsyncState<T>(renderer: () => void, resolver: () => Promise<T>): AsyncProperty<T> {
-	const result = {
-		refresh: () => {
-			resolver().then(value => {
-				result.state = 'resolved'
-				;(result as Resolved<T>).value = value
-			}).catch(error => {
-				result.state = 'rejected'
-				;(result as Rejected).error = error
-			}).then(renderer)
-		},
-		state: 'pending'
-	} as AsyncProperty<T>
-	result.refresh()
-	return result
+export function asyncState<T>(resolver?: () => Promise<T>): [AsyncProperty<T>, (resolver: () => Promise<T>) => void, () => void] {
+	async function activate(resolver: () => Promise<T>, skipPendingSet: boolean = false) {
+		try {
+			if (!skipPendingSet) {
+				const pendingState = { state: 'pending' as const }
+				setResult(pendingState)
+			}
+			const resolvedValue = await resolver()
+			const resolvedState = { state: 'resolved' as const, value: resolvedValue }
+			setResult(resolvedState)
+		} catch (unknownError: unknown) {
+			const error = unknownError instanceof Error ? unknownError : new Error(`Unknown error occurred.`)
+			const rejectedState = { state: 'rejected' as const, error }
+			setResult(rejectedState)
+		}
+	}
+	function reset() {
+		setResult({ state: 'inactive' })
+	}
+
+	const [ result, setResult ] = (resolver === undefined)
+		? preactHooks.useState<AsyncProperty<T>>(() => ({ state: 'inactive' }))
+		: preactHooks.useState<AsyncProperty<T>>(() => { activate(resolver, true); return { state: 'pending' } })
+	return [ result, resolver => activate(resolver), reset ]
 }
