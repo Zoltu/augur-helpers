@@ -1,11 +1,11 @@
 import { attoToString } from '../library/big-number-utilities'
-import { asyncState } from '../library/react-utilities'
+import { useAsyncState } from '../library/preact-utilities'
 
 export function TransferUni(model: Readonly<{
 	withdrawUni: (amount: bigint) => void,
 	getBalance: () => Promise<bigint>,
 }>) {
-	const [ balance, setBalance ] = asyncState(model.getBalance)
+	const [ balance, setBalance ] = useAsyncState(model.getBalance)
 	switch (balance.state) {
 		case 'pending':
 			return <div>

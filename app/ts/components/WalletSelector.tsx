@@ -9,7 +9,7 @@ import { AugurWalletRegistryV2 } from '../library/augur-wallet-registry-v2'
 import { AddressPrompt } from './AddressPrompt';
 import { addressString } from '../library/big-number-utilities';
 import { AugurWallet } from '../library/augur-wallet'
-import { asyncState } from '../library/react-utilities'
+import { useAsyncState } from '../library/preact-utilities'
 import { Erc20 } from '../library/erc20'
 
 export interface BaseWallet {
@@ -124,7 +124,7 @@ function ConnectToInjected(model: Readonly<{
 export function WalletSelector(model: Readonly<{
 	onChange: (wallet: Wallet | undefined) => void,
 }>) {
-	const [ walletAsync, setWalletAsync, resetWalletAsync ] = asyncState<Wallet>()
+	const [ walletAsync, setWalletAsync, resetWalletAsync ] = useAsyncState<Wallet>()
 	preactHooks.useEffect(() => {
 		if (walletAsync.state === 'inactive') model.onChange(undefined)
 		if (walletAsync.state === 'resolved') model.onChange(walletAsync.value)

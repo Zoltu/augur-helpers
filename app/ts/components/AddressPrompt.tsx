@@ -9,8 +9,9 @@ export function AddressPrompt(model: Readonly<{
 	const [ address, setAddress ] = preactHooks.useState<undefined | bigint>(undefined)
 	const [ error, setError ] = preactHooks.useState('')
 	preactHooks.useEffect(() => {
-		const match = /^(?:0x)?([a-fA-F0-9]{40})$/.exec(stringAddress)
-		if (stringAddress === '') {
+		const trimmedStringAddress = stringAddress.trim()
+		const match = /^(?:0x)?([a-fA-F0-9]{40})$/.exec(trimmedStringAddress)
+		if (trimmedStringAddress === '') {
 			setError('')
 			if (address !== undefined) {
 				setAddress(undefined)

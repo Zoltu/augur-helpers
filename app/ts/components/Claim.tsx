@@ -1,6 +1,6 @@
 import * as preactHooks from 'preact/hooks'
 import { bigintToDecimalString } from '../library/big-number-utilities'
-import { asyncState } from '../library/react-utilities'
+import { useAsyncState } from '../library/preact-utilities'
 import { AddressPrompt } from './AddressPrompt'
 
 function ShareAmount(model: Readonly<{
@@ -20,7 +20,7 @@ function OutcomeBalance(model: Readonly<{
 	getBalance: () => Promise<bigint>,
 	numTicks: bigint
 }>) {
-	const [ balanceAsync, setBalanceAsync ] = asyncState(model.getBalance)
+	const [ balanceAsync, setBalanceAsync ] = useAsyncState(model.getBalance)
 	switch (balanceAsync.state) {
 		case 'inactive':
 			return <div><button onClick={() => setBalanceAsync(model.getBalance)}>↻</button></div>
@@ -39,7 +39,7 @@ function OutcomeBalance(model: Readonly<{
 function ClaimButton(model: Readonly<{
 	claim: () => Promise<void>
 }>) {
-	const [ claimResultAsync, setClaimResultAsync ] = asyncState<void>()
+	const [ claimResultAsync, setClaimResultAsync ] = useAsyncState<void>()
 	switch (claimResultAsync.state) {
 		case 'pending':
 			return <div>
@@ -100,7 +100,7 @@ export function MaybeMarket(model: Readonly<{
 	getShareBalance: (outcome: number) => Promise<bigint>,
 	claimWinnings?: () => Promise<void>,
 }>) {
-	const [ marketDetails, queryMarketDetails ] = asyncState(model.getMarketDetails)
+	const [ marketDetails, queryMarketDetails ] = useAsyncState(model.getMarketDetails)
 	switch (marketDetails.state) {
 		case 'pending':
 			return <div>
