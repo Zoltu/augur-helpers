@@ -78,7 +78,6 @@ function createViewingWallet(address: bigint) {
 	const jsonRpcAddress = 'https://ethereum.zoltu.io'
 	const rpc = new FetchJsonRpc(jsonRpcAddress, window.fetch.bind(window), { addressProvider: async () => address })
 	const fetchDependencies = new FetchDependencies(rpc)
-
 	return createWalletFromDependencies(fetchDependencies, address, false)
 }
 
@@ -87,15 +86,18 @@ async function createContractWallet(underlying: Wallet) {
 	const walletAddress = await augurWalletRegistry.getWallet_(underlying.address)
 	if (walletAddress === 0n) throw new Error(`${addressString(underlying.address)} does not have an Augur v2 contract wallet.`)
 	const augurWallet = new AugurWallet(underlying.dependencies, walletAddress)
-	if (underlying.type === 'signing' && !await augurWallet.authorizedProxies_(walletAddress)) {
+	if (underlying.type === 'signing' && !await augurWallet.authorizedProxies_(underlying.address)) {
 		// TODO: let the user know what we are prompting for
-		await augurWallet.addAuthorizedProxy(walletAddress)
+		await augurWallet.addAuthorizedProxy(underlying.address)
 	}
 
 	const dependencies: Dependencies = {
 		call: async (address, methodSignature, methodParameters, value) => {
-			const calldata = await encodeMethod(keccak256.hash, methodSignature, methodParameters)
-			return await underlying.dependencies.call(walletAddress, 'executeTransaction(address _to, bytes _data, uint256 _value)', [address, calldata, value], 0n)
+			// FIXME: the Augur wallet contract doesn't support propogating return data, so we can't call through it and our library
+			// FIXME: ideally, we would execute the call via underlying dependencies but with the wallet address as the `from`, but library doesn't support that right now
+			return await underlying.dependencies.call(address, methodSignature, methodParameters, value)
+			// const calldata = await encodeMethod(keccak256.hash, methodSignature, methodParameters)
+			// return await underlying.dependencies.call(walletAddress, 'executeTransaction(address _to, bytes _data, uint256 _value)', [address, calldata, value], 0n)
 		},
 		submitTransaction: async (address, methodSignature, methodParameters, value) => {
 			const calldata = await encodeMethod(keccak256.hash, methodSignature, methodParameters)

@@ -19,7 +19,8 @@ export function TransferUni(model: Readonly<{
 			</div>
 		case 'resolved':
 			return <div>
-				<span>UNI: {attoToString(balance.value)}</span>
+				<div><span>UNI: {attoToString(balance.value)}</span> <button onClick={() => setBalance(model.getBalance)}>↻</button></div>
+				<button onClick={() => model.withdrawUni(balance.value)}>Withdraw To Self</button>
 			</div>
 	}
 }
